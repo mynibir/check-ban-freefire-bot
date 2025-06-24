@@ -54,18 +54,18 @@ async def change_language(ctx, lang_code: str):
     message = "✅ Language set to English." if lang_code == 'en' else "✅ Langue définie sur le français."
     await ctx.send(f"{ctx.author.mention} {message}")
 
-@bot.command(name="ID")
+@bot.command(name="check")
 async def check_ban_command(ctx):
     content = ctx.message.content
-    user_id = content[3:].strip()
+    user_id = content[7:].strip()  # "!check " is 7 characters including space
     lang = user_languages.get(ctx.author.id, "en")
 
     print(f"Commande fait par {ctx.author} (lang={lang})")
 
     if not user_id.isdigit():
         message = {
-            "en": f"{ctx.author.mention} ❌ **Invalid UID!**\n➡️ Please use: `!ID 123456789`",
-            "fr": f"{ctx.author.mention} ❌ **UID invalide !**\n➡️ Veuillez fournir un UID valide sous la forme : `!ID 123456789`"
+            "en": f"{ctx.author.mention} ❌ **Invalid UID!**\n➡️ Please use: `!check 123456789`",
+            "fr": f"{ctx.author.mention} ❌ **UID invalide !**\n➡️ Veuillez fournir un UID valide sous la forme : `!check 123456789`"
         }
         await ctx.send(message[lang])
         return
@@ -111,7 +111,6 @@ async def check_ban_command(ctx):
                 f"**• {'Player ID' if lang == 'en' else 'ID du joueur'} :** `{id_str}`\n"
                 f"**• {'Region' if lang == 'en' else 'Région'} :** `{region}`"
             )
-            # embed.set_image(url="https://i.ibb.co/wFxTy8TZ/banned.gif")
             file = discord.File("assets/banned.gif", filename="banned.gif")
             embed.set_image(url="attachment://banned.gif")
         else:
@@ -123,12 +122,11 @@ async def check_ban_command(ctx):
                 f"**• {'Player ID' if lang == 'en' else 'ID du joueur'} :** `{id_str}`\n"
                 f"**• {'Region' if lang == 'en' else 'Région'} :** `{region}`"
             )
-            # embed.set_image(url="https://i.ibb.co/Kx1RYVKZ/notbanned.gif")
             file = discord.File("assets/notbanned.gif", filename="notbanned.gif")
             embed.set_image(url="attachment://notbanned.gif")
 
         embed.set_thumbnail(url=ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url)
         embed.set_footer(text="DEVELOPED BY THUG•")
-        await ctx.send(f"{ctx.author.mention}", embed=embed ,file=file)
+        await ctx.send(f"{ctx.author.mention}", embed=embed, file=file)
 
 bot.run(TOKEN)
