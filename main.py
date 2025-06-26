@@ -35,13 +35,14 @@ threading.Thread(target=run_flask).start()
 async def on_ready():
     global nomBot
     nomBot = f"{bot.user}"
-    print(f"Le bot est connecté en tant que {bot.user}")
+    await bot.change_presence(activity=discord.Game(name="Quantum Corporation"))
+    print(f"✅ Bot connected as {bot.user} and RPC set")
 
 @bot.command(name="guilds")
 async def show_guilds(ctx):
     guild_names = [f"{i+1}. {guild.name}" for i, guild in enumerate(bot.guilds)]
     guild_list = "\n".join(guild_names)
-    await ctx.send(f"Le bot est dans les guilds suivantes :\n{guild_list}")
+    await ctx.send(f"📜 The bot is in the following servers:\n{guild_list}")
 
 @bot.command(name="lang")
 async def change_language(ctx, lang_code: str):
@@ -60,7 +61,7 @@ async def check_ban_command(ctx):
     user_id = content[7:].strip()  # "!check " is 7 characters including space
     lang = user_languages.get(ctx.author.id, "en")
 
-    print(f"Commande fait par {ctx.author} (lang={lang})")
+    print(f"Command made by {ctx.author} (lang={lang})")
 
     if not user_id.isdigit():
         message = {
@@ -102,28 +103,26 @@ async def check_ban_command(ctx):
         )
 
         if is_banned:
-    embed.title = "🚫 Banned Account"
-    embed.description = (
-        f"**📌 Reason:** This account has been banned for using third party application.\n"
-        f"**⏳ Suspension:** {period_str}\n"
-        f"**👤 Nickname:** `{nickname}`\n"
-        f"**🆔 Player ID:** {id_str}\n"
-        f"**🌍 Region:** `{region}`"
-    )
-    file = discord.File("assets/banned.gif", filename="banned.gif")
-    embed.set_image(url="attachment://banned.gif")
-
-       else:
-    embed.title = "✅ Clean Account"
-    embed.description = (
-        f"**📌 Status:** No evidence of illegal activity was found on this account.\n"
-        f"**👤 Nickname:** `{nickname}`\n"
-        f"**🆔 Player ID:** {id_str}\n"
-        f"**🌍 Region:** `{region}`"
-    )
-    file = discord.File("assets/notbanned.gif", filename="notbanned.gif")
-    embed.set_image(url="attachment://notbanned.gif")
-
+            embed.title = "🚫 Banned Account"
+            embed.description = (
+                f"**📌 Reason:** This account has been banned for using third-party applications.\n"
+                f"**⏳ Suspension:** {period_str}\n"
+                f"**👤 Nickname:** `{nickname}`\n"
+                f"**🆔 Player ID:** {id_str}\n"
+                f"**🌍 Region:** `{region}`"
+            )
+            file = discord.File("assets/banned.gif", filename="banned.gif")
+            embed.set_image(url="attachment://banned.gif")
+        else:
+            embed.title = "✅ Clean Account"
+            embed.description = (
+                f"**📌 Status:** No evidence of illegal activity was found on this account.\n"
+                f"**👤 Nickname:** `{nickname}`\n"
+                f"**🆔 Player ID:** {id_str}\n"
+                f"**🌍 Region:** `{region}`"
+            )
+            file = discord.File("assets/notbanned.gif", filename="notbanned.gif")
+            embed.set_image(url="attachment://notbanned.gif")
 
         embed.set_thumbnail(url=ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url)
         embed.set_footer(text="Developed by Nibir•")
